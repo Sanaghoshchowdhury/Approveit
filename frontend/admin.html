@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="./src/output.css">
+  <script src="./src/app.js" defer></script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+
+<!-- Navbar -->
+<nav class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow">
+  <h1 class="text-xl font-bold">ApproveIt – Admin</h1>
+  <div class="flex gap-4 items-center">
+    🔔
+    <button onclick="toggleDark()">🌙</button>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="p-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+
+  <!-- Verification Card -->
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+    <h2 class="font-semibold mb-3">Student Document Verification</h2>
+
+    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
+      <div class="bg-blue-600 h-3 rounded-full w-[70%]"></div>
+    </div>
+
+    <img src="./assets/pdf-placeholder.png" class="w-full h-40 object-cover rounded mb-4">
+
+    <button onclick="showToast('Documents Verified')" class="bg-blue-600 px-4 py-2 rounded text-white">
+      Verify
+    </button>
+  </div>
+
+  <!-- Donor / Payment -->
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+    <h2 class="font-semibold mb-3">Payment Verification</h2>
+
+    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
+      <div class="bg-green-600 h-3 rounded-full w-[85%]"></div>
+    </div>
+
+    <p class="text-sm mb-4">Transaction ID: TXN98432</p>
+
+    <button onclick="showToast('Payment Approved')" class="bg-green-600 px-4 py-2 rounded text-white">
+      Approve Payment
+    </button>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-6 right-6 bg-black text-white px-4 py-2 rounded shadow"></div>
+
+</body>
+</html>

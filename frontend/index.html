@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ApproveIt | Home</title>
+  <link rel="stylesheet" href="./src/output.css">
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
+
+  <div class="bg-white w-[420px] rounded-2xl shadow-xl p-8">
+
+    <h1 class="text-3xl font-bold text-center text-indigo-600">
+      ApproveIt
+    </h1>
+    <p class="text-center text-gray-500 mb-6">
+      AI-Driven Approval System
+    </p>
+
+    <!-- ROLE DROPDOWN (keep this, as you said it's fine) -->
+    <select id="role"
+      class="w-full border p-3 rounded-lg mb-4">
+      <option value="student">🎓 Student</option>
+      <option value="faculty">👩‍🏫 Faculty</option>
+      <option value="admin">🛠 Admin</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Username"
+      class="w-full border p-3 rounded-lg mb-3"
+    />
+
+    <input
+      type="password"
+      placeholder="Password"
+      class="w-full border p-3 rounded-lg mb-5"
+    />
+
+    <button onclick="login()"
+      class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition">
+      Login
+    </button>
+
+  </div>
+
+  <script src="./src/app.js"></script>
+</body>
+</html>
