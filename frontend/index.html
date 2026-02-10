@@ -2,48 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ApproveIt | Home</title>
-  <link rel="stylesheet" href="./src/output.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApproveIt | Login</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    // 1. Configure Tailwind for Dark Mode
+    tailwind.config = {
+      darkMode: 'class',
+    }
+
+    // 2. Immediate Theme Check (Prevents white flash)
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center">
+<body class="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center transition-colors duration-500 p-4">
 
-  <div class="bg-white w-[420px] rounded-2xl shadow-xl p-8">
+  <button id="themeBtn" onclick="toggleDark()" class="absolute top-5 right-5 w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-700 rounded-2xl shadow-xl hover:scale-110 transition-all active:scale-95">
+    🌙
+  </button>
 
-    <h1 class="text-3xl font-bold text-center text-indigo-600">
-      ApproveIt
-    </h1>
-    <p class="text-center text-gray-500 mb-6">
-      AI-Driven Approval System
-    </p>
+  <div class="bg-white dark:bg-slate-800 w-full max-w-[420px] rounded-3xl shadow-2xl p-10 transition-all border border-transparent dark:border-slate-700">
 
-    <!-- ROLE DROPDOWN (keep this, as you said it's fine) -->
-    <select id="role"
-      class="w-full border p-3 rounded-lg mb-4">
-      <option value="student">🎓 Student</option>
-      <option value="faculty">👩‍🏫 Faculty</option>
-      <option value="admin">🛠 Admin</option>
-    </select>
+    <div class="text-center mb-8">
+        <h1 class="text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">
+          ApproveIt
+        </h1>
+        <p class="text-gray-500 dark:text-slate-400 mt-2 font-medium">
+          AI-Driven Approval System
+        </p>
+    </div>
 
-    <input
-      type="text"
-      placeholder="Username"
-      class="w-full border p-3 rounded-lg mb-3"
-    />
+    <div class="mb-5">
+        <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">Select Your Role</label>
+        <select id="role"
+          class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all appearance-none">
+          <option value="student">🎓 Student Portal</option>
+          <option value="faculty">👩‍🏫 Faculty Portal</option>
+          <option value="admin">🛠 Admin Portal</option>
+        </select>
+    </div>
 
-    <input
-      type="password"
-      placeholder="Password"
-      class="w-full border p-3 rounded-lg mb-5"
-    />
+    <div class="mb-4">
+        <input
+          type="text"
+          placeholder="Username"
+          class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all"
+        />
+    </div>
+
+    <div class="mb-8">
+        <input
+          type="password"
+          placeholder="Password"
+          class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all"
+        />
+    </div>
 
     <button onclick="login()"
-      class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition">
-      Login
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold shadow-lg shadow-indigo-200 dark:shadow-none transition-all active:scale-95">
+      Sign In
     </button>
+
+    <p class="text-center text-xs text-gray-400 dark:text-slate-500 mt-6 uppercase tracking-widest font-bold">
+        Secure Academic Gateway
+    </p>
 
   </div>
 
-  <script src="./src/app.js"></script>
+  <script>
+    // 1. Dark Mode Toggle
+    function toggleDark() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateUI(isDark);
+    }
+
+    function updateUI(isDark) {
+      const btn = document.getElementById('themeBtn');
+      if (btn) btn.innerText = isDark ? '☀️' : '🌙';
+    }
+
+    // 2. Navigation Logic (Redirecting to your other files)
+    function login() {
+      const role = document.getElementById('role').value;
+      
+      // These names must match your file names exactly (student.html, faculty.html, admin.html)
+      if (role === 'admin') {
+          window.location.href = 'admin.html';
+      } else if (role === 'faculty') {
+          window.location.href = 'faculty.html';
+      } else {
+          window.location.href = 'student.html';
+      }
+    }
+
+    // 3. Initialize Icon on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateUI(document.documentElement.classList.contains('dark'));
+    });
+  </script>
 </body>
 </html>

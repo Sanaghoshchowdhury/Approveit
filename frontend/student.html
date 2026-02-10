@@ -5,140 +5,182 @@
   <title>Student Dashboard | ApproveIt</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tailwind -->
   <link rel="stylesheet" href="./src/output.css">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
 
-  <!-- Dark mode support -->
- <script>
-  function toggleDarkMode() {
-    document.documentElement.classList.toggle('dark');
-  }
-</script>
-
+  <script>
+    function applyTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+    applyTheme(); // Run immediately
+  </script>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 dark:text-white transition">
+<body class="bg-gray-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-500">
 
-<!-- TOAST -->
 <div id="toast"
-     class="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow hidden">
+     class="fixed top-5 right-5 z-50 bg-green-600 text-white px-6 py-3 rounded-xl shadow-2xl hidden animate-bounce">
   ✅ Request Submitted Successfully
 </div>
 
 <div class="flex min-h-screen">
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-blue-700 dark:bg-gray-800 text-white p-6">
-    <h2 class="text-xl font-bold mb-6">ApproveIt</h2>
+  <aside class="w-64 bg-indigo-700 dark:bg-slate-800 text-white p-6 shadow-2xl flex flex-col">
+    <div class="mb-10">
+        <h2 class="text-2xl font-black tracking-tighter">ApproveIt</h2>
+        <p class="text-xs text-indigo-200 dark:text-slate-400">Student Portal v1.0</p>
+    </div>
 
-    <nav class="space-y-3">
-      <a href="#" class="block p-2 rounded hover:bg-blue-600">Dashboard</a>
-      <a href="#" class="block p-2 rounded hover:bg-blue-600">New Request</a>
-      <a href="#" class="block p-2 rounded hover:bg-blue-600">Track Status</a>
-      <a href="index.html" class="block p-2 rounded hover:bg-blue-600">Logout</a>
+    <nav class="space-y-2 flex-1">
+      <a href="#" class="flex items-center space-x-3 p-3 rounded-xl bg-indigo-800 dark:bg-slate-700 shadow-inner">
+        <span>🏠</span> <span class="font-medium">Dashboard</span>
+      </a>
+      <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-700 transition-all">
+        <span>📝</span> <span>New Request</span>
+      </a>
+      <a href="#" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600 dark:hover:bg-slate-700 transition-all">
+        <span>🧭</span> <span>Track Status</span>
+      </a>
     </nav>
+
+    <div class="border-t border-indigo-500 dark:border-slate-700 pt-6">
+      <a href="index.html" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-red-500 transition-colors group">
+        <span class="group-hover:rotate-12 transition">🚪</span> <span>Logout</span>
+      </a>
+    </div>
   </aside>
 
-  <!-- MAIN -->
-  <main class="flex-1 p-6">
+  <main class="flex-1 p-8 lg:p-12">
 
-    <!-- TOP BAR -->
-    <div class="flex justify-between items-center mb-6">
-
+    <div class="flex justify-between items-center mb-12">
       <div>
-        <h1 class="text-2xl font-bold">Student Dashboard</h1>
-        <p class="text-gray-600 dark:text-gray-400">
-          Track your approval requests in real time
-        </p>
+        <h1 class="text-3xl font-extrabold tracking-tight">Student Dashboard</h1>
+        <p class="text-slate-500 dark:text-slate-400">Welcome back! You have 2 pending approvals.</p>
       </div>
 
-      <div class="flex items-center space-x-4">
-
-        <!-- Notification Bell -->
-        <div class="relative">
-          <span class="text-2xl cursor-pointer">🔔</span>
-          <span
-            class="absolute -top-1 -right-1 bg-red-600 text-xs px-1 rounded-full">
-            2
-          </span>
-        </div>
-
-        <!-- Dark Mode Toggle -->
-        <button onclick="toggleDarkMode()"
-                class="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded">
+      <div class="flex items-center space-x-5">
+        <button id="themeBtn" onclick="toggleDarkMode()" 
+                class="w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-90">
           🌙
         </button>
 
+        <div class="relative w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-2xl cursor-pointer">
+          <span class="text-xl">🔔</span>
+          <span class="absolute top-2 right-2 bg-red-500 w-3 h-3 rounded-full border-2 border-white dark:border-slate-800"></span>
+        </div>
       </div>
     </div>
 
-    <!-- REQUEST CARD -->
-    <div
-      class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border-l-4 border-red-500 transition hover:scale-[1.02]">
-
-      <div class="flex justify-between items-start">
-        <div>
-          <h3 class="text-lg font-semibold">Internship NOC</h3>
-          <p class="text-sm text-gray-500">Deadline: 10 Feb 2026</p>
+    <div class="grid grid-cols-1 gap-8">
+      
+      <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-xl">
+        
+        <div class="flex flex-wrap justify-between items-start gap-4 mb-8">
+          <div>
+            <span class="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg">High Priority (AI Detected)</span>
+            <h3 class="text-2xl font-bold mt-2">Internship NOC Request</h3>
+            <p class="text-slate-400 text-sm italic">Case ID: #STU-99421</p>
+          </div>
+          <div class="text-right">
+             <p class="text-sm font-bold text-red-500 animate-pulse">⏳ 1 Day Remaining</p>
+             <p class="text-xs text-slate-400 mt-1">Deadline: 10 Feb 2026</p>
+          </div>
         </div>
 
-        <span class="px-3 py-1 text-xs bg-red-100 text-red-700 rounded-full">
-          🔥 High Priority (AI)
-        </span>
-      </div>
+        
+        <div class="relative flex items-center justify-between mb-12">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 dark:bg-slate-700 z-0"></div>
+          <div id="progressLine" class="absolute left-0 top-1/2 -translate-y-1/2 w-2/3 h-1 bg-green-500 z-0 transition-all duration-1000"></div>
 
-      <!-- PROGRESS BAR -->
-      <div class="mt-6">
-        <p class="text-sm mb-2">Approval Progress</p>
+          <div class="relative z-10 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200 dark:shadow-none">✓</div>
+            <span class="text-xs mt-2 font-bold text-green-600">Submitted</span>
+          </div>
 
-        <div class="flex items-center space-x-2 text-sm">
-          <span class="text-green-600">Submitted</span>
-          <div class="flex-1 h-1 bg-green-500"></div>
+          <div class="relative z-10 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-lg shadow-green-200 dark:shadow-none">✓</div>
+            <span class="text-xs mt-2 font-bold text-green-600">Faculty</span>
+          </div>
 
-          <span class="text-green-600">Faculty</span>
-          <div class="flex-1 h-1 bg-green-500"></div>
+          <div class="relative z-10 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-yellow-500 text-white flex items-center justify-center font-bold animate-ring ring-4 ring-yellow-100 dark:ring-yellow-900/20 shadow-lg shadow-yellow-200">3</div>
+            <span class="text-xs mt-2 font-bold text-yellow-600">Admin</span>
+          </div>
 
-          <span class="text-yellow-600">Admin</span>
-          <div class="flex-1 h-1 bg-gray-300"></div>
-
-          <span class="text-gray-400">Final</span>
+          <div class="relative z-10 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-400 flex items-center justify-center font-bold">4</div>
+            <span class="text-xs mt-2 text-slate-400">Final</span>
+          </div>
         </div>
-      </div>
 
-      <!-- COUNTDOWN -->
-      <p class="text-red-600 text-sm mt-3">⏳ 1 day left</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div class="space-y-4">
+            <h4 class="font-bold text-lg flex items-center">
+              <span class="mr-2">📄</span> Generated Document Preview
+            </h4>
+            <div class="w-full max-w-[240px] aspect-[3/4] bg-slate-100 dark:bg-slate-700 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex flex-col items-center justify-center p-6 text-center group cursor-pointer hover:border-indigo-500 transition-all">
+              <span class="text-4xl mb-3 opacity-50 group-hover:scale-110 transition">📥</span>
+              <p class="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">NOC_Draft_Final.pdf<br>(Click to Expand)</p>
+            </div>
+          </div>
 
-      <!-- PDF PREVIEW -->
-      <div class="mt-6">
-        <p class="font-semibold mb-2">Generated Document Preview</p>
-
-        <div
-          class="w-48 h-64 bg-gray-200 dark:bg-gray-700 flex items-center justify-center rounded shadow">
-          📄 PDF Preview
+          <div class="flex flex-col justify-end space-y-6">
+            <div class="p-5 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-900/30">
+              <p class="text-sm text-indigo-900 dark:text-indigo-300 leading-relaxed">
+                <span class="font-bold">🤖 AI Status:</span> Your attendance (88%) and CGPA (9.1) meet the automated approval threshold. Admin signature is pending.
+              </p>
+            </div>
+            <button onclick="showToast()" 
+                    class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-indigo-200 dark:shadow-none transition-all active:scale-[0.98]">
+              Request Official Copy
+            </button>
+          </div>
         </div>
+
       </div>
-
-      <!-- ACTION -->
-      <button onclick="showToast()"
-              class="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Submit New Request
-      </button>
-
     </div>
-
   </main>
 </div>
 
-<!-- TOAST SCRIPT -->
 <script>
+  // 1. Toggle Dark Mode and Save Preference
+  function toggleDarkMode() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateButtonIcon(isDark);
+  }
+
+  // 2. Update the button icon
+  function updateButtonIcon(isDark) {
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.innerText = isDark ? '☀️' : '🌙';
+  }
+
+  // 3. Show Toast Notification
   function showToast() {
     const toast = document.getElementById("toast");
     toast.classList.remove("hidden");
-
     setTimeout(() => {
       toast.classList.add("hidden");
     }, 3000);
   }
+
+  // 4. Initialize page icon on load
+  window.addEventListener('DOMContentLoaded', () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    updateButtonIcon(isDark);
+  });
 </script>
 
 </body>
