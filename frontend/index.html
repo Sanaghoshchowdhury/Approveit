@@ -61,13 +61,14 @@
     <div id="loginForm">
 
         <div class="mb-4">
-            <input type="text" placeholder="Username"
-              class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
+           <input id="loginEmail" type="email" placeholder="Email"
+  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
+
         </div>
 
         <div class="mb-8">
-            <input type="password" placeholder="Password"
-              class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
+           <input id="loginPassword" type="password" placeholder="Password"
+  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
         </div>
 
         <button onclick="login()"
@@ -88,25 +89,24 @@
     <div id="signupForm" class="hidden">
 
         <div class="mb-4">
-            <input type="text" placeholder="Full Name"
-              class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
+           <input id="signupName" type="text" placeholder="Full Name"
+  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
+
         </div>
 
         <div class="mb-4">
-            <input type="email" placeholder="Email"
-              class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
-        </div>
+           <input id="signupEmail" type="email" placeholder="Email"
+  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
 
         <div class="mb-6">
-            <input type="password" placeholder="Password"
-              class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
+            <input id="signupPassword" type="password" placeholder="Password"
+  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
         </div>
 
-        <button
-          class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold transition-all active:scale-95">
-          Create Account
-        </button>
-
+       <button onclick="signup()"
+  class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold transition-all active:scale-95">
+  Create Account
+</button>
         <p class="text-center text-sm mt-6 dark:text-slate-400">
             Already have an account?
             <button onclick="showLogin()" 
@@ -123,6 +123,50 @@
   </div>
 
   <!-- JavaScript -->
+   <!-- JavaScript -->
+<script>
+
+async function signup() {
+  const name = document.getElementById("signupName").value;
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  if (!name || !email || !password) {
+    alert("All fields required");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:5000/api/students/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        rollNo: "TEMP123",
+        department: "CSE"
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Signup failed");
+      return;
+    }
+
+    alert("Signup successful, now login");
+    showLogin();
+
+  } catch (err) {
+    alert("Server error");
+  }
+}
+
+</script>
+
+   
   <script>
 
     // Dark Mode Toggle
@@ -149,17 +193,51 @@
     }
 
     // Redirect Logic
-    function login() {
-      const role = document.getElementById('role').value;
+    async function login() {
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+  const role = document.getElementById("role").value;
 
-      if (role === 'admin') {
-          window.location.href = 'admin.html';
-      } else if (role === 'faculty') {
-          window.location.href = 'faculty.html';
-      } else {
-          window.location.href = 'student.html';
-      }
+  if (!email || !password) {
+    alert("Email & password required");
+    return;
+  }
+
+  let url = "";
+
+  if (role === "student") url = "http://localhost:5000/api/students/login";
+  else if (role === "faculty") url = "http://localhost:5000/api/faculty/login";
+  else url = "http://localhost:5000/api/admin/login";
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Login failed");
+      return;
     }
+
+    alert("Login successful");
+
+    if (role === "student") {
+      window.location.href = "student.html";
+    } else if (role === "faculty") {
+      window.location.href = "faculty.html";
+    } else {
+      window.location.href = "admin.html";
+    }
+
+  } catch (err) {
+    alert("Server error");
+  }
+}
+
 
     // Initialize Theme Icon
     window.addEventListener('DOMContentLoaded', () => {
