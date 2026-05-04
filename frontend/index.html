@@ -6,147 +6,147 @@
   <title>ApproveIt | Login</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script>
-    // Tailwind Dark Mode Config
-    tailwind.config = {
-      darkMode: 'class',
-    }
-
-    // Prevent white flash on reload
-    if (localStorage.getItem('theme') === 'dark' || 
-       (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  </script>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center transition-colors duration-500 p-4">
+<body class="min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center p-4">
 
-  <!-- Dark Mode Toggle -->
-  <button id="themeBtn" onclick="toggleDark()" 
-    class="absolute top-5 right-5 w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-700 rounded-2xl shadow-xl hover:scale-110 transition-all active:scale-95">
-    🌙
+  <div class="bg-white w-full max-w-[420px] rounded-3xl shadow-2xl p-10">
+
+    <h1 class="text-3xl font-bold text-center mb-6">ApproveIt</h1>
+
+    <!-- Role -->
+    <select id="role" class="w-full p-3 mb-4 border rounded">
+      <option value="student">Student</option>
+      <option value="faculty">Faculty</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <input id="loginEmail" type="email" placeholder="Email" class="w-full p-3 mb-3 border rounded" />
+      <input id="loginPassword" type="password" placeholder="Password" class="w-full p-3 mb-3 border rounded" />
+
+      <button onclick="login()" class="w-full bg-indigo-600 text-white p-3 rounded">
+        Login
+      </button>
+
+      <p class="mt-4 text-center">
+        <button onclick="showSignup()">Create Account</button>
+      </p>
+    </div>
+
+    <!-- SIGNUP -->
+   <div id="signupForm" class="hidden">
+
+  <input id="signupName" type="text" placeholder="Name" class="w-full p-3 mb-3 border rounded" />
+
+  <input id="signupEmail" type="email" placeholder="Email" class="w-full p-3 mb-3 border rounded" />
+
+  <!-- STUDENT ONLY -->
+  <div id="studentFields">
+    <input id="signupRollNo" type="text" placeholder="Roll No" class="w-full p-3 mb-3 border rounded" />
+    <input id="signupDepartment" type="text" placeholder="Department" class="w-full p-3 mb-3 border rounded" />
+  </div>
+
+  <input id="signupPassword" type="password" placeholder="Password" class="w-full p-3 mb-3 border rounded" />
+
+  <button onclick="signup()" class="w-full bg-green-600 text-white p-3 rounded">
+    Create Account
   </button>
 
-  <!-- Card -->
-  <div class="bg-white dark:bg-slate-800 w-full max-w-[420px] rounded-3xl shadow-2xl p-10 transition-all border border-transparent dark:border-slate-700">
-
-    <!-- Title -->
-    <div class="text-center mb-8">
-        <h1 class="text-4xl font-black text-indigo-600 dark:text-indigo-400 tracking-tighter">
-          ApproveIt
-        </h1>
-        <p class="text-gray-500 dark:text-slate-400 mt-2 font-medium">
-          AI-Driven Approval System
-        </p>
     </div>
-
-    <!-- Role Selection -->
-    <div class="mb-5">
-        <label class="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
-          Select Your Role
-        </label>
-        <select id="role"
-          class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all">
-          <option value="student">🎓 Student Portal</option>
-          <option value="faculty">👩‍🏫 Faculty Portal</option>
-          <option value="admin">🛠 Admin Portal</option>
-        </select>
-    </div>
-
-    <!-- LOGIN FORM -->
-    <div id="loginForm">
-
-        <div class="mb-4">
-           <input id="loginEmail" type="email" placeholder="Email"
-  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
-
-        </div>
-
-        <div class="mb-8">
-           <input id="loginPassword" type="password" placeholder="Password"
-  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
-        </div>
-
-        <button onclick="login()"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold shadow-lg transition-all active:scale-95">
-          Sign In
-        </button>
-
-        <p class="text-center text-sm mt-6 dark:text-slate-400">
-            New user?
-            <button onclick="showSignup()" 
-              class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
-                Create Account
-            </button>
-        </p>
-    </div>
-
-    <!-- SIGNUP FORM -->
-    <div id="signupForm" class="hidden">
-
-        <div class="mb-4">
-           <input id="signupName" type="text" placeholder="Full Name"
-  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
-
-        </div>
-
-        <div class="mb-4">
-           <input id="signupEmail" type="email" placeholder="Email"
-  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
-
-        <div class="mb-6">
-            <input id="signupPassword" type="password" placeholder="Password"
-  class="w-full border-2 border-gray-100 dark:border-slate-700 p-4 rounded-xl bg-gray-50 dark:bg-slate-700 dark:text-white outline-none focus:border-indigo-500 transition-all" />
-        </div>
-
-       <button onclick="signup()"
-  class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold transition-all active:scale-95">
-  Create Account
-</button>
-        <p class="text-center text-sm mt-6 dark:text-slate-400">
-            Already have an account?
-            <button onclick="showLogin()" 
-              class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">
-                Sign In
-            </button>
-        </p>
-    </div>
-
-    <p class="text-center text-xs text-gray-400 dark:text-slate-500 mt-6 uppercase tracking-widest font-bold">
-        Secure Academic Gateway
-    </p>
 
   </div>
 
-  <!-- JavaScript -->
-   <!-- JavaScript -->
 <script>
 
+// SWITCH FORMS
+function showSignup() {
+  document.getElementById("loginForm").classList.add("hidden");
+  document.getElementById("signupForm").classList.remove("hidden");
+}
+
+function showLogin() {
+  document.getElementById("signupForm").classList.add("hidden");
+  document.getElementById("loginForm").classList.remove("hidden");
+}
+document.getElementById("role").addEventListener("change", function () {
+  const role = this.value;
+  const studentFields = document.getElementById("studentFields");
+
+  if (role === "student") {
+    studentFields.style.display = "block";
+  } else {
+    studentFields.style.display = "none";
+  }
+});
+
+/* OPTIONAL but recommended */
+window.onload = () => {
+  const role = document.getElementById("role").value;
+  const studentFields = document.getElementById("studentFields");
+  studentFields.style.display = role === "student" ? "block" : "none";
+};
+
+
+// SIGNUP FUNCTION (FIXED 🔥)
 async function signup() {
   const name = document.getElementById("signupName").value;
   const email = document.getElementById("signupEmail").value;
+  const rollNo = document.getElementById("signupRollNo").value;
+  const department = document.getElementById("signupDepartment").value;
   const password = document.getElementById("signupPassword").value;
+  const role = document.getElementById("role").value;
+
+  // ---------------- VALIDATIONS ----------------
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!name || !email || !password) {
-    alert("All fields required");
+    alert("Name, Email & Password are required");
     return;
   }
 
+  if (!emailRegex.test(email)) {
+    alert("Invalid email format");
+    return;
+  }
+
+  if (password.length < 6) {
+    alert("Password must be at least 6 characters");
+    return;
+  }
+
+  // ---------------- ROUTE SELECTION ----------------
+  let url = "";
+
+  if (role === "student") {
+    url = "http://localhost:5000/api/students/signup";
+  } else if (role === "faculty") {
+    url = "http://localhost:5000/api/faculty/signup";
+  } else {
+    url = "http://localhost:5000/api/admin/signup";
+  }
+
+  // ---------------- PAYLOAD FIX (IMPORTANT PART) ----------------
+  let payload = {
+    name,
+    email,
+    password,
+    
+  };
+
+  // only student gets extra fields
+  if (role === "student") {
+    payload.rollNo = rollNo;
+    payload.department = department;
+  }
+
+  // ---------------- API CALL ----------------
   try {
-    const res = await fetch("http://localhost:5000/api/students/signup", {
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        rollNo: "TEMP123",
-        department: "CSE"
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await res.json();
@@ -156,47 +156,36 @@ async function signup() {
       return;
     }
 
-    alert("Signup successful, now login");
+    alert("Signup successful 🎉");
+
+    // auto fill login
+    document.getElementById("loginEmail").value = email;
+    document.getElementById("loginPassword").value = password;
+
     showLogin();
 
   } catch (err) {
+    console.error(err);
     alert("Server error");
   }
 }
 
-</script>
-
-   
-  <script>
-
-    // Dark Mode Toggle
-    function toggleDark() {
-      const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      updateUI(isDark);
-    }
-
-    function updateUI(isDark) {
-      const btn = document.getElementById('themeBtn');
-      if (btn) btn.innerText = isDark ? '☀️' : '🌙';
-    }
-
-    // Toggle Forms
-    function showSignup() {
-      document.getElementById('loginForm').classList.add('hidden');
-      document.getElementById('signupForm').classList.remove('hidden');
-    }
-
-    function showLogin() {
-      document.getElementById('signupForm').classList.add('hidden');
-      document.getElementById('loginForm').classList.remove('hidden');
-    }
-
-    // Redirect Logic
-    async function login() {
+// LOGIN FUNCTION (WORKING)
+async function login() {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
   const role = document.getElementById("role").value;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(email)) {
+  alert("Invalid email format");
+  return;
+}
+
+if (password.length < 6) {
+  alert("Password must be at least 6 characters");
+  return;
+}
 
   if (!email || !password) {
     alert("Email & password required");
@@ -205,9 +194,13 @@ async function signup() {
 
   let url = "";
 
-  if (role === "student") url = "http://localhost:5000/api/students/login";
-  else if (role === "faculty") url = "http://localhost:5000/api/faculty/login";
-  else url = "http://localhost:5000/api/admin/login";
+  if (role === "student") {
+    url = "http://localhost:5000/api/students/login";
+  } else if (role === "faculty") {
+    url = "http://localhost:5000/api/faculty/login";
+  } else {
+    url = "http://localhost:5000/api/admin/login";
+  }
 
   try {
     const res = await fetch(url, {
@@ -227,8 +220,11 @@ async function signup() {
 
     if (role === "student") {
       window.location.href = "student.html";
+       localStorage.setItem("studentId", data.student.id);
+
     } else if (role === "faculty") {
       window.location.href = "faculty.html";
+       localStorage.setItem("facultyId", data.faculty.id); // 🔥 important
     } else {
       window.location.href = "admin.html";
     }
@@ -238,13 +234,7 @@ async function signup() {
   }
 }
 
-
-    // Initialize Theme Icon
-    window.addEventListener('DOMContentLoaded', () => {
-      updateUI(document.documentElement.classList.contains('dark'));
-    });
-
-  </script>
+</script>
 
 </body>
 </html>

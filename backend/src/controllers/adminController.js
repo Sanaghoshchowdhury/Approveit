@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
-// FACULTY SIGNUP
+// ADMIN SIGNUP
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -13,11 +13,15 @@ if (!emailRegex.test(email)) {
   return res.status(400).json({ message: "Invalid email format" });
 }
 
+if (password.length < 6) {
+  return res.status(400).json({ message: "Password must be at least 6 characters" });
+}
+
     if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields required" });
     }
 
-    const existing = await prisma.faculty.findUnique({
+    const existing = await prisma.admin.findUnique({
       where: { email },
     });
 
@@ -27,7 +31,7 @@ if (!emailRegex.test(email)) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const faculty = await prisma.faculty.create({
+    const admin = await prisma.admin.create({
       data: {
         name,
         email,
@@ -36,8 +40,8 @@ if (!emailRegex.test(email)) {
     });
 
     res.status(201).json({
-      message: "Faculty registered successfully",
-      faculty,
+      message: "Admin registered successfully",
+      admin,
     });
 
   } catch (error) {
@@ -45,7 +49,7 @@ if (!emailRegex.test(email)) {
   }
 };
 
-// FACULTY LOGIN
+// ADMIN LOGIN
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -59,15 +63,15 @@ if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Email and password required" });
     }
 
-    const faculty = await prisma.faculty.findUnique({
+    const admin = await prisma.admin.findUnique({
       where: { email },
     });
 
-    if (!faculty) {
-      return res.status(404).json({ message: "Faculty not found" });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
     }
 
-    const isMatch = await bcrypt.compare(password, faculty.password);
+    const isMatch = await bcrypt.compare(password, admin.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -75,52 +79,14 @@ if (!emailRegex.test(email)) {
 
     res.json({
       message: "Login successful",
-      faculty: {
-        id: faculty.id,
-        name: faculty.name,
-        email: faculty.email,
+      admin: {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
       },
     });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-  
 };
-exports.updateStatus = async (req, res) => {
-  try {
-    const id = parseInt(req.params.id); // ✅ FIX
-    const { status } = req.body;
-
-    const updatedRequest = await prisma.request.update({
-      where: { id },
-      data: { status }
-    });
-
-    res.json({
-      message: "Status updated successfully",
-      updatedRequest
-    });
-
-  } catch (error) {
-    console.error("Update Error:", error);
-    res.status(500).json({ error: "Error updating status" });
-  }
-};
-exports.getAllRequests = async (req, res) => {
-  try {
-    const requests = await prisma.request.findMany({
-      orderBy: {
-        createdAt: "desc"
-      }
-    });
-
-    res.json(requests);
-
-  } catch (error) {
-    console.error("Fetch Error:", error);
-    res.status(500).json({ error: "Error fetching requests" });
-  }
-};
-
-

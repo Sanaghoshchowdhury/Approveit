@@ -49,18 +49,8 @@
       <p class="text-gray-500 dark:text-gray-400">Review and authorize student internship requests.</p>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all hover:shadow-2xl">
-      
-      <div class="flex justify-between items-start mb-6">
-        <div>
-          <h3 class="text-2xl font-bold">Internship NOC</h3>
-          <p class="text-blue-600 dark:text-blue-400 font-semibold mt-1">Sana G. Chowdhury</p>
-          <p class="text-xs text-gray-400 tracking-wider uppercase mt-1">Computer Science Dept.</p>
-        </div>
-        <span class="bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest animate-pulse">
-          Pending Review
-        </span>
-      </div>
+    <!-- ✅ Dynamic Requests Container -->
+<div id="requestContainer" class="space-y-6"></div>
 
       <div class="mb-8">
         <div class="flex justify-between text-xs font-bold mb-2">
@@ -77,13 +67,7 @@
         <p class="text-sm font-bold text-gray-400 group-hover:text-blue-500">Preview Internship_Application.pdf</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-4">
-        <button onclick="showToast('Request Approved Successfully!', 'success')" class="flex-1 bg-green-600 hover:bg-green-700 px-6 py-4 rounded-2xl text-white font-bold transition-all shadow-lg shadow-green-100 dark:shadow-none active:scale-95">
-          ✅ Approve Request
-        </button>
-        <button onclick="showToast('Request Rejected', 'error')" class="flex-1 bg-red-600 hover:bg-red-700 px-6 py-4 rounded-2xl text-white font-bold transition-all active:scale-95">
-          ❌ Reject
-        </button>
+      
       </div>
     </div>
   </main>
@@ -94,43 +78,148 @@
   </div>
 
   <script>
-    // 1. Dark Mode Toggle
-    function toggleDark() {
-      const isDark = document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      updateUI(isDark);
+  // ✅ 1. LOAD REQUESTS (SEPARATE FUNCTION)
+  async function loadRequests() {
+  try {
+    const res = await fetch("http://localhost:5000/api/faculty/requests");
+    const data = await res.json();
+
+    const container = document.getElementById("requestContainer");
+    container.innerHTML = "";
+
+    if (data.length === 0) {
+      container.innerHTML = `<p class="text-center text-gray-400">No Requests Found</p>`;
+      return;
     }
 
-    function updateUI(isDark) {
-      const btn = document.getElementById('themeBtn');
-      if(btn) btn.innerText = isDark ? '☀️' : '🌙';
-    }
+    data.forEach(req => {
+      const card = `
+      <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-700">
 
-    // 2. Toast Notification Logic
-    function showToast(message, type) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toastMsg');
-      const toastIcon = document.getElementById('toastIcon');
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h3 class="text-2xl font-bold">${req.title}</h3>
+            <p class="text-blue-600 dark:text-blue-400 font-semibold mt-1">
+              Student ID: ${req.studentId}
+            </p>
+            <p class="text-xs text-gray-400 uppercase mt-1">
+              Request ID: ${req.id}
+            </p>
+          </div>
 
-      toastMsg.innerText = message;
-      toastIcon.innerText = (type === 'success') ? '✅' : '❌';
-      
-      // Show Toast (Slide up and Fade in)
-      toast.classList.remove('hidden', 'translate-y-20', 'opacity-0');
-      
-      // Hide Toast after 3 seconds
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
-        setTimeout(() => toast.classList.add('hidden'), 3000);
-      }, 3000);
-    }
+          <span class="${
+            req.status === "PENDING"
+              ? "bg-yellow-100 text-yellow-700"
+              : req.status === "APPROVED"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          } px-4 py-1.5 rounded-full text-[10px] font-bold uppercase">
+            ${req.status}
+          </span>
+        </div>
 
-    // 3. Initialize on Load
-    window.addEventListener('DOMContentLoaded', () => {
-      const isDarkNow = document.documentElement.classList.contains('dark');
-      updateUI(isDarkNow);
+        <div class="mb-6">
+          <p class="text-gray-500">${req.description}</p>
+        </div>
+
+        ${
+          req.status === "PENDING"
+            ? `
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button onclick="updateStatus(${req.id}, 'APPROVED')" 
+            class="flex-1 bg-green-600 hover:bg-green-700 px-6 py-4 rounded-2xl text-white font-bold">
+            ✅ Approve Request
+          </button>
+
+          <button onclick="updateStatus(${req.id}, 'REJECTED')" 
+            class="flex-1 bg-red-600 hover:bg-red-700 px-6 py-4 rounded-2xl text-white font-bold">
+            ❌ Reject
+          </button>
+        </div>
+        `
+            : `
+<p class="text-sm font-semibold mt-3 ${
+  req.status === "APPROVED" ? "text-green-500" : "text-red-500"
+}">
+  ✔ Already ${req.status}
+</p>
+`
+        }
+
+      </div>
+      `;
+
+      container.innerHTML += card;
     });
-  </script>
+
+  } catch (err) {
+    console.error("Load Error:", err);
+  }
+}
+  // ✅ 2. UPDATE STATUS
+  async function updateStatus(requestId, status) {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/faculty/update-status/${requestId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+
+      const data = await response.json();
+      console.log("Response:", data);
+
+      showToast("Status Updated Successfully!", "success");
+
+      loadRequests(); // 🔥 IMPORTANT (refresh UI)
+
+    } catch (err) {
+      console.error("Frontend Error:", err);
+      showToast("Error updating status", "error");
+    }
+  }
+
+  // ✅ 3. DARK MODE
+  function toggleDark() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateUI(isDark);
+  }
+
+  function updateUI(isDark) {
+    const btn = document.getElementById('themeBtn');
+    if(btn) btn.innerText = isDark ? '☀️' : '🌙';
+  }
+
+  // ✅ 4. TOAST
+  function showToast(message, type) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    const toastIcon = document.getElementById('toastIcon');
+
+    toastMsg.innerText = message;
+    toastIcon.innerText = (type === 'success') ? '✅' : '❌';
+    
+    toast.classList.remove('hidden', 'translate-y-20', 'opacity-0');
+    
+    setTimeout(() => {
+      toast.classList.add('translate-y-20', 'opacity-0');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }, 3000);
+  }
+
+  // ✅ 5. PAGE LOAD
+  window.addEventListener('DOMContentLoaded', () => {
+    const isDarkNow = document.documentElement.classList.contains('dark');
+    updateUI(isDarkNow);
+
+    loadRequests(); // 🔥 main trigger
+  });
+</script>
 
 </body>
 </html>

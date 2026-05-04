@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  teacherLogin
-} = require("../controllers/facultyController");
+const facultyController = require("../controllers/facultyController");
 
-router.post("/login", teacherLogin);
+router.post("/signup", facultyController.signup);
+router.post("/login", facultyController.login);
+router.put("/update-status/:id", facultyController.updateStatus);
+router.get("/requests", facultyController.getAllRequests);
 
 module.exports = router;

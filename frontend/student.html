@@ -74,6 +74,9 @@
                 class="w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-90">
           🌙
         </button>
+        <button onclick="createRequest()" style="background: blue; color: white; padding: 10px;">
+  Create Request
+</button>
 
         <div class="relative w-12 h-12 flex items-center justify-center bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-2xl cursor-pointer">
           <span class="text-xl">🔔</span>
@@ -83,6 +86,7 @@
     </div>
 
     <div class="grid grid-cols-1 gap-8">
+      <div id="studentRequestContainer" class="space-y-8"></div>
       
       <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-xl">
         
@@ -154,6 +158,73 @@
 </div>
 
 <script>
+  async function createRequest() {
+    const studentId = localStorage.getItem("studentId"); // ✅ ADD
+  const response = await fetch("http://localhost:5000/api/students/create-request", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      title: "Internship NOC",
+      description: "Need approval",
+      facultyId: 1,
+      studentId: localStorage.getItem("studentId")
+    })
+  });
+const data = await response.json();
+  console.log("Created Request:", data);
+  loadMyRequests(); // 🔥 instantly show new request
+}
+// ✅ LOAD STUDENT REQUESTS
+async function loadMyRequests() {
+  const studentId = localStorage.getItem("studentId");
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/students/my-requests/${studentId}`);
+    const data = await res.json();
+    console.log("My Requests:", data);
+
+
+    const container = document.getElementById("studentRequestContainer");
+    container.innerHTML = "";
+
+    data.forEach(req => {
+      const card = `
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-xl">
+
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-2xl font-bold">${req.title}</h3>
+
+            <span class="px-3 py-1 text-xs font-bold rounded-lg ${
+              req.status === "PENDING" ? "bg-yellow-100 text-yellow-700" :
+              req.status === "APPROVED" ? "bg-green-100 text-green-700" :
+              "bg-red-100 text-red-700"
+            }">
+              ${req.status}
+            </span>
+          </div>
+
+          <p class="text-slate-400">${req.description}</p>
+
+          <p class="mt-4 text-sm font-semibold ${
+            req.status === "PENDING" ? "text-yellow-500" :
+            req.status === "APPROVED" ? "text-green-500" :
+            "text-red-500"
+          }">
+            Current Status: ${req.status}
+          </p>
+
+        </div>
+      `;
+
+      container.innerHTML += card;
+    });
+
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
   // 1. Toggle Dark Mode and Save Preference
   function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
@@ -180,6 +251,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     const isDark = document.documentElement.classList.contains('dark');
     updateButtonIcon(isDark);
+     loadMyRequests(); // 🔥 important
   });
 </script>
 
